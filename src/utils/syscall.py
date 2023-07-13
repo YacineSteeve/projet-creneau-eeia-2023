@@ -3,20 +3,28 @@ from os import system
 
 from .logger import logger
 
-MAX_CALLS_BEFORE_CANCEL = 3
 
+def syscall(command: str, required: bool = False, retry: bool = True):
+    max_calls_before_cancel: int = 3
 
-def syscall(command: str, required: bool = False) -> None:
-    for _ in range(MAX_CALLS_BEFORE_CANCEL):
+    for _ in range(max_calls_before_cancel):
         try:
             if system(command) == 0:
                 return
-            logger.error(f"Unable to execute '{command}'. Try to run it manually.")
 
-            if required:
-                sys.exit(1)
+            if not retry:
+                logger.warning(f"Command '{command}' failed")
+                break
+
         except KeyboardInterrupt:
-            logger.warn(f"Command '{command}' cancelled")
+            logger.warning(f"Command '{command}' cancelled")
+
+        except Exception:
+            logger.exception(f"Command '{command}' failed")
+
+        if required:
+            logger.error(f"Unable to execute '{command}'. Try to run it manually.")
+            sys.exit(1)
 
 
 if __name__ == "__main__":

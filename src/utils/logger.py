@@ -3,12 +3,16 @@ import os
 
 
 USER = os.getlogin()
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+ROOT_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(__file__)
+    )
+)
 LOG_FILE = os.path.join(ROOT_DIR, f'{USER}.log')
 
 
 class CustomFormatter(logging.Formatter):
-    FORMAT = '%(asctime)s --%(name)s--[%(pathname)s:%(lineno)d] %(levelname)-8s | %(message)s'
+    FORMAT = '%(asctime)s [%(pathname)s:%(lineno)d] %(levelname)-8s | %(message)s'
     LEVEL_COLORS = {
         'DEBUG': '\033[0;36m',  # Cyan
         'INFO': '\033[0;37m',  # White
@@ -46,18 +50,12 @@ class CustomLogger(logging.Logger):
         super().__init__(name, logging.DEBUG)
 
         console_handler = logging.StreamHandler()
-        file_handler = logging.FileHandler(LOG_FILE, encoding='utf-8')
-
         console_formatter = CustomFormatter(colored=True)
-        file_formatter = CustomFormatter(colored=False)
 
         console_handler.setFormatter(console_formatter)
-        file_handler.setFormatter(file_formatter)
 
         self.addFilter(LogFilter())
-
         self.addHandler(console_handler)
-        self.addHandler(file_handler)
 
 
 logging.setLoggerClass(CustomLogger)

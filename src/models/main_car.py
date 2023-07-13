@@ -80,6 +80,6 @@ class MainCar(Car):
         return self.angle
 
     def __str__(self):
-        return f"{self.name} " \
-               f"(current speed: [ {self.speed.x}, {self.speed.y} ], " \
-               f"current angle: {self.angle}°)"
+        return f"{self.name}" \
+               f"\n\t--> current speed: [ {self.speed.x}, {self.speed.y} ], " \
+               f"\n\t--> current angle: {self.angle}°)"
